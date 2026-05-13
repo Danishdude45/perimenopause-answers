@@ -200,8 +200,9 @@
     z-index: 99;
   }
   .alpha-nav a {
-    width: 30px;
+    min-width: 30px;
     height: 30px;
+    padding: 0 8px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -502,7 +503,7 @@
   <a href="#symptoms">S</a>
   <a href="#brain">B</a>
   <a href="#sleep">Z</a>
-  <a href="#weight">W</a>
+  <a href="#weight">Wt</a>
   <a href="#supplements">+</a>
   <a href="#hrt">H</a>
   <a href="#lifestyle">L</a>
@@ -898,7 +899,7 @@
   <div class="qa-section" id="weight-section">
     <span class="section-anchor" id="weight"></span>
     <div class="section-header">
-      <div class="section-letter">W</div>
+      <div class="section-letter">Wt</div>
       <div class="section-title">Weight & Body Changes</div>
       <div class="section-count">5 questions</div>
     </div>
@@ -1352,7 +1353,7 @@
 
     // Hide section headers if all items in section are hidden
     sections.forEach(section => {
-      const visibleItems = section.querySelectorAll('.qa-item:not([style*="display: none"])');
+      const visibleItems = Array.from(section.querySelectorAll('.qa-item')).filter(i => i.style.display !== 'none');
       section.style.display = visibleItems.length > 0 ? '' : 'none';
     });
 
@@ -1376,10 +1377,10 @@
 
   // Highlight active alpha nav
   const navLinks = document.querySelectorAll('.alpha-nav a');
-  const sections = document.querySelectorAll('.section-anchor');
+  const navSections = document.querySelectorAll('.section-anchor');
   window.addEventListener('scroll', () => {
     let current = '';
-    sections.forEach(s => {
+    navSections.forEach(s => {
       if (window.scrollY >= s.offsetTop - 120) current = s.id;
     });
     navLinks.forEach(a => {
