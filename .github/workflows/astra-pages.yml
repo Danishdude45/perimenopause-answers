@@ -1,0 +1,38 @@
+name: Astra approved page publishing
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '43 * * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: astra-pages
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/configure-pages@v5
+      - name: Build approved page
+        env:
+          ASTRA_RENDER_URL: https://astra.mtaa.ai/publisher/answers.rosemyfriend.com/index.html
+        run: |
+          mkdir _site
+          curl --fail --silent --show-error --retry 2 --max-time 60 "$ASTRA_RENDER_URL" -o _site/index.html
+          cp CNAME _site/CNAME
+          touch _site/.nojekyll
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4
